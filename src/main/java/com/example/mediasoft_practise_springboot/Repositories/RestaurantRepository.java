@@ -16,7 +16,7 @@ public class RestaurantRepository {
     }
     public Restaurant save(Restaurant restaurant){
         if (restaurant.getId() == null) {
-            restaurant.setId(idSequence.getAndDecrement());
+            restaurant.setId(idSequence.getAndIncrement());
             restaurants.add(restaurant);
         }  else {
         restaurants.removeIf(r -> r.getId().equals(restaurant.getId()));
