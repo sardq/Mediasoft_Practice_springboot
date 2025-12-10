@@ -1,51 +1,23 @@
 package com.example.mediasoft_practise_springboot.Repositories;
 
 import com.example.mediasoft_practise_springboot.Entities.Rating;
+import com.example.mediasoft_practise_springboot.Entities.RatingId;
+import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+
 @Repository
-public class RatingRepository {
-    private final List<Rating> ratings = new ArrayList<>();
-    public List<Rating> findAll(){
-        return new ArrayList<>(ratings);
-    }
-    public Rating save(Rating rating){
-        ratings.removeIf(r ->
-                r.getCustomerId().equals(rating.getCustomerId()) &&
-                        r.getRestaurantId().equals(rating.getRestaurantId())
-        );
-        ratings.add(rating);
-        return rating;
-    }
-    public void remove(Long customerId, Long restaurantId){
-        ratings.removeIf(r -> r.getRestaurantId().equals(restaurantId) && r.getCustomerId().equals(customerId));
-    }
-    public List<Rating> findByRestaurantId(Long restaurantId) {
-        return ratings.stream()
-                .filter(r -> r.getRestaurantId().equals(restaurantId))
-                .toList();
-    }
-    public Rating findById(Long customerId, Long restaurantId) {
-        return ratings.stream()
-                .filter(r ->
-                        r.getCustomerId().equals(customerId) &&
-                                r.getRestaurantId().equals(restaurantId))
-                .findFirst()
-                .orElse(null);
-    }
-    public List<Rating> findByCustomerId(Long customerId) {
-        return ratings.stream()
-                .filter(r -> r.getCustomerId().equals(customerId))
-                .toList();
-    }
-
-    public void removeByRestaurantId(Long restaurantId) {
-        ratings.removeIf(r -> r.getRestaurantId().equals(restaurantId));
-    }
-
-    public void removeByCustomerId(Long customerId) {
-        ratings.removeIf(r -> r.getCustomerId().equals(customerId));
-    }
+public interface RatingRepository extends JpaRepository<Rating, RatingId> {
+    //Поиск всех оценок с помощью пагинации
+    @NonNull Page<Rating> findAll(
+            @NonNull Pageable pageable
+    );
+    //Поиск оценок по Id ресторана
+    List<Rating> findByRestaurantId(Long restaurantId);
+    //Поиск оценок по Id посетителя
+    List<Rating> findByCustomerId(Long customerId);
 }
