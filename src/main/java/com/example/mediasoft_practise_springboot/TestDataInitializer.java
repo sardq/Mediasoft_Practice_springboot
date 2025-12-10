@@ -1,5 +1,6 @@
 package com.example.mediasoft_practise_springboot;
 
+import com.example.mediasoft_practise_springboot.DTO.*;
 import com.example.mediasoft_practise_springboot.Entities.*;
 import com.example.mediasoft_practise_springboot.Enums.*;
 import com.example.mediasoft_practise_springboot.Services.*;
@@ -26,61 +27,39 @@ public class TestDataInitializer {
     @PostConstruct
     public void init() {
 
-        Customer c1 = customerService.createRaw(
-                Customer.builder()
-                        .name("Сергей")
-                        .age(21)
-                        .gender(GenderEnum.Male)
-                        .build()
+        CustomerResponseDTO c1 = customerService.create(
+                new CustomerRequestDTO("Сергей", 21, GenderEnum.Male)
         );
 
-        Customer c2 = customerService.createRaw(
-                Customer.builder()
-                        .age(30)
-                        .gender(GenderEnum.Female)
-                        .build()
+        CustomerResponseDTO c2 = customerService.create(
+                new CustomerRequestDTO(null, 30, GenderEnum.Female)
         );
 
-        Restaurant r1 = restaurantService.createRaw(
-                Restaurant.builder()
-                        .name("La Pasta")
-                        .description("Итальянская кухня")
-                        .kitchenType(KitchenType.Italy)
-                        .averageCheck(BigDecimal.valueOf(823.11))
-                        .build()
+
+        RestaurantResponseDTO r1 = restaurantService.create(
+                new RestaurantRequestDTO("La Pasta", "Итальянская кухня", KitchenType.Italy, BigDecimal.valueOf(823.11))
         );
 
-        Restaurant r2 = restaurantService.createRaw(
-                Restaurant.builder()
-                        .name("China Town")
-                        .description("Китайская кухня")
-                        .kitchenType(KitchenType.China)
-                        .averageCheck(BigDecimal.valueOf(1321.31))
-                        .build()
+        RestaurantResponseDTO r2 = restaurantService.create(
+                new RestaurantRequestDTO("China Town", "Китайская кухня", KitchenType.China, BigDecimal.valueOf(1321.31))
         );
 
-        ratingService.createRaw(
-                new Rating(c1.getId(), r1.getId(), 5, "Отлично!")
-        );
 
-        Rating rating2 = ratingService.createRaw(
-                new Rating(c2.getId(), r1.getId(), 3, "Нормально")
-        );
+        ratingService.create(new RatingRequestDTO(c1.getId(), r1.getId(), 5, "Отлично!"));
+        ratingService.create(new RatingRequestDTO(c2.getId(), r1.getId(), 3, "Нормально"));
+        ratingService.create(new RatingRequestDTO(c2.getId(), r2.getId(), 3, null));
 
-        ratingService.createRaw(
-                new Rating(c2.getId(), r2.getId(), 3, null)
-        );
 
-        System.out.println("Все пользователи: " + customerService.findAllEntities());
-        System.out.println("Все рестораны: " + restaurantService.findAllEntities());
-        System.out.println("Все оценки: " + ratingService.findAllEntities());
+        System.out.println("Все пользователи: " + customerService.findAll());
+        System.out.println("Все рестораны: " + restaurantService.findAll());
+        System.out.println("Все оценки: " + ratingService.findAll());
 
         customerService.remove(c2.getId());
         restaurantService.remove(r2.getId());
 
         System.out.println("После удаления:");
-        System.out.println("Все пользователи: " + customerService.findAllEntities());
-        System.out.println("Все рестораны: " + restaurantService.findAllEntities());
-        System.out.println("Все оценки: " + ratingService.findAllEntities());
+        System.out.println("Все пользователи: " + customerService.findAll());
+        System.out.println("Все рестораны: " + restaurantService.findAll());
+        System.out.println("Все оценки: " + ratingService.findAll());
     }
 }

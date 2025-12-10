@@ -2,11 +2,16 @@ package com.example.mediasoft_practise_springboot.Controllers;
 
 import com.example.mediasoft_practise_springboot.DTO.RatingRequestDTO;
 import com.example.mediasoft_practise_springboot.DTO.RatingResponseDTO;
+import com.example.mediasoft_practise_springboot.Enums.SortDirection;
 import com.example.mediasoft_practise_springboot.Services.RatingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,4 +65,20 @@ public class RatingController {
     {
         ratingService.remove(customerId,restaurantId);
     }
+    @GetMapping("/paged")
+    @Operation(summary = "Получить отзывы постранично с сортировкой")
+    @ApiResponse(responseCode = "200", description = "Страница отзывов")
+    public Page<RatingResponseDTO> getPaged(
+            @Parameter(description = "Направление сортировки: ASC - по возрастанию, DESC - по убыванию") @RequestParam(defaultValue = "DESC") SortDirection direction,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Sort sort = direction == SortDirection.ASC ?
+                Sort.by("rate").ascending() :
+                Sort.by("rate").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ratingService.findPaged(pageable);
+    }
+
 }

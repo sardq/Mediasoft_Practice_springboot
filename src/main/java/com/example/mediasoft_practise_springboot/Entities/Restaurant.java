@@ -1,19 +1,35 @@
 package com.example.mediasoft_practise_springboot.Entities;
+
 import com.example.mediasoft_practise_springboot.Enums.KitchenType;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "restaurants")
 @Data
-@Builder
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Restaurant {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private @NonNull String name;
+
+    @Column(nullable = false)
+    private String name;
+
     private String description;
-    private @NonNull KitchenType kitchenType;
-    private @NonNull BigDecimal averageCheck;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private KitchenType kitchenType;
+
+    @Column(nullable = false)
+    private BigDecimal averageCheck;
+
     @Builder.Default
     private BigDecimal rating = BigDecimal.ZERO;
 }

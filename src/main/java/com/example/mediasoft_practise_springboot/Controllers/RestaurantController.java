@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 @RestController
 @RequestMapping("api/restaurants")
@@ -56,4 +57,11 @@ public class RestaurantController {
     {
         restaurantService.remove(id);
     }
+
+    @GetMapping("/min-rating-query")
+    @Operation(summary = "Найти рестораны с оценкой не ниже заданной")
+    public List<RestaurantResponseDTO> getByMinRatingQuery(@RequestParam BigDecimal rating) {
+        return restaurantService.findByMinRatingQuery(rating);
+    }
+
 }
