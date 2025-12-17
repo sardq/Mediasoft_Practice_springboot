@@ -13,7 +13,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     //Поиск с помощью @Query и JPQL запроса ресторанов с рейтингом больше чем задано
     @Query(
-            "SELECT r FROM Restaurant r WHERE r.rating >= :rating"
+            "SELECT r FROM Restaurant r WHERE r.rating > :rating"
     )
     List<Restaurant> searchByRating(BigDecimal rating);
 }
